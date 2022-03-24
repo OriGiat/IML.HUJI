@@ -51,7 +51,13 @@ class UnivariateGaussian:
         Sets `self.mu_`, `self.var_` attributes according to calculated estimation (where
         estimator is either biased or unbiased). Then sets `self.fitted_` attribute to `True`
         """
-        raise NotImplementedError()
+        if not self.biased_:
+            self.mu_ = X.mean()
+            self.var_ = X.var()
+        else:
+            self.mu_ = X.mean()
+            sum = X.sum()
+            self.var_ = sum - len(X)*self.mu_
 
         self.fitted_ = True
         return self
@@ -168,7 +174,7 @@ class MultivariateGaussian:
         """
         if not self.fitted_:
             raise ValueError("Estimator must first be fitted before calling `pdf` function")
-        raise NotImplementedError()
+        
 
     @staticmethod
     def log_likelihood(mu: np.ndarray, cov: np.ndarray, X: np.ndarray) -> float:
@@ -190,3 +196,10 @@ class MultivariateGaussian:
             log-likelihood calculated over all input data and under given parameters of Gaussian
         """
         raise NotImplementedError()
+
+
+if __name__ == "__main__":
+    a = UnivariateGaussian()
+    s = np.random.normal(10, 1, 1000)
+    a.fit(s)
+    print(a.mu_, a.var_)
